@@ -16,7 +16,12 @@ function NewExpense (props) {
         setIsAddExpense(false);
     } 
     function saveExpenseData (newExpense) {
-        console.log(newExpense)
+        props.onAddExpense({
+            id: Math.random().toString(), // it is not good way for create id but now ok.
+            title: newExpense.eneteredTitle,
+            amount: newExpense.eneteredAmount,
+            date: new Date(newExpense.eneteredDate)
+        });
     }
     function cancleErrorModal() {
         setError(false);

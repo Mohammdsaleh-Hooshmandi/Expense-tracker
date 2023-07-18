@@ -10,8 +10,8 @@ function Expenses(props) {
 
     function filterChangeHandler (selectedYear) {
         setFilteredYear(selectedYear);
-        console.log(filteredYear)
     }
+    
     return (
         <div className={classes.expenses}>
             <ExpenseFilter selectedYear={filteredYear} onChangeFilter={filterChangeHandler} />
