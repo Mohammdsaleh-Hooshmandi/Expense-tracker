@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 
 import classes from "./NewExpense.module.css";
 import ExpenseForm from "./ExpenseForm";
+import ErrorModal from "../UI/ErrorModal";
 
 function NewExpense (props) {
     const [isAddExpense, setIsAddExpense] = useState(false);
@@ -17,6 +18,9 @@ function NewExpense (props) {
     function saveExpenseData (newExpense) {
         console.log(newExpense)
     }
+    function cancleErrorModal() {
+        setError(false);
+    }
 
     return (
         <div className={classes.newExpense}>
@@ -27,6 +31,15 @@ function NewExpense (props) {
                                 onSaveExpenseData={saveExpenseData}
                                 onError={setError}
                             />
+            }
+            {
+            error && ReactDOM.createPortal(
+                <ErrorModal
+                    onCancle={cancleErrorModal}
+                    title={error.title}
+                    message={error.message}
+                />,
+                document.getElementById("modal-root"))
             }
         </div>
     );
