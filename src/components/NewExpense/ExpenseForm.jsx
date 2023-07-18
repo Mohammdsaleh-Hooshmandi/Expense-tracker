@@ -10,17 +10,27 @@ function ExpenseForm(props) {
             eneteredDate: ""
         }
     );
+    function validateNewData() {
+        if (userInput.eneteredTitle.trim().length === 0 || userInput.eneteredAmount.trim().length === 0 || userInput.eneteredDate.trim().length === 0) {
+            props.onError({ title: "Empty input", message: "Please Enter valid value(non-empty value)." });
+            return false;
+        }
 
+        return true;
+    }
     function formSubmitHandler(event) {
         event.preventDefault();
-        props.onSaveExpenseData(userInput);
-        setUserInput(
-            {
-            eneteredTitle: "",
-            eneteredAmount: "",
-            eneteredDate: ""
+
+        if (validateNewData()) {
+            props.onSaveExpenseData(userInput);
+            setUserInput(
+                {
+                    eneteredTitle: "",
+                    eneteredAmount: "",
+                    eneteredDate: ""
+                }
+            );
         }
-        );
     }
     function titleChangeHandler(event) {
         setUserInput(preState => { return { ...preState, eneteredTitle: event.target.value } });
