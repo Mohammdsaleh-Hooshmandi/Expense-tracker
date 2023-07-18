@@ -12,11 +12,19 @@ function NewExpense (props) {
     function cancleAddExpenseHandler () {
         setIsAddExpense(false);
     }
+    function saveExpenseData (newExpense) {
+        console.log(newExpense)
+    }
 
     return (
         <div className={classes.newExpense}>
             {!isAddExpense && <button onClick={addExpenseHandler}>Add New Expense</button>}
-            {isAddExpense && <ExpenseForm onCancle={cancleAddExpenseHandler} />}
+            {
+            isAddExpense && <ExpenseForm
+                                onCancle={cancleAddExpenseHandler}
+                                onSaveExpenseData={saveExpenseData}
+                            />
+            }
         </div>
     );
 }

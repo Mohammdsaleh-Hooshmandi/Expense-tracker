@@ -13,6 +13,14 @@ function ExpenseForm(props) {
 
     function formSubmitHandler(event) {
         event.preventDefault();
+        props.onSaveExpenseData(userInput);
+        setUserInput(
+            {
+            eneteredTitle: "",
+            eneteredAmount: "",
+            eneteredDate: ""
+        }
+        );
     }
     function titleChangeHandler(event) {
         setUserInput(preState => { return { ...preState, eneteredTitle: event.target.value } });
