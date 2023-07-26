@@ -1,45 +1,63 @@
-import { useState } from "react";
+import { useReducer, useEffect, useState } from "react";
 
 import classes from "./ExpenseForm.module.css";
 
-function ExpenseForm(props) {
-    const [userInput, setUserInput] = useState(
-        {
-            eneteredTitle: "",
-            eneteredAmount: "",
-            eneteredDate: ""
-        }
-    );
-    function validateNewData() {
-        if (userInput.eneteredTitle.trim().length === 0 || userInput.eneteredAmount.trim().length === 0 || userInput.eneteredDate.trim().length === 0) {
-            props.onError({ title: "Empty input", message: "Please Enter valid value(non-empty value)." });
-            return false;
-        }
+function reducer(state, action) {
+    switch (action.type) {
+        case "TITLE":
+            return { ...state, eneteredTitle: action.newInput };
 
-        return true;
+        case "AMOUNT":
+            return { ...state, eneteredAmount: action.newInput };
+
+        case "DATE":
+            return { ...state, eneteredDate: action.newInput };
+
+        case "CLEAN":
+            return {
+                eneteredTitle: "",
+                eneteredAmount: "",
+                eneteredDate: ""
+            };
     }
+}
+
+function ExpenseForm(props) {
+    const initialState = {
+        eneteredTitle: "",
+        eneteredAmount: "",
+        eneteredDate: ""
+    };
+    const [userInputsState, dispatchUserInputs] = useReducer(reducer, initialState);
+    const [isValid, setIsValid] = useState(false);
+
+    useEffect(() => {
+        if (userInputsState.eneteredTitle.trim().length === 0 || userInputsState.eneteredAmount.trim().length === 0 || userInputsState.eneteredDate.trim().length === 0) {
+            setIsValid(false);
+            return;
+        }
+        setIsValid(true);
+    }, [userInputsState]);
+
     function formSubmitHandler(event) {
         event.preventDefault();
 
-        if (validateNewData()) {
-            props.onSaveExpenseData(userInput);
-            setUserInput(
-                {
-                    eneteredTitle: "",
-                    eneteredAmount: "",
-                    eneteredDate: ""
-                }
-            );
+        if (isValid) {
+            props.onSaveExpenseData(userInputsState);
+            dispatchUserInputs({ type: "CLEAN" });
+            return;
         }
+
+        props.onError({ title: "Empty input", message: "Please Enter valid value(non-empty value)." });
     }
     function titleChangeHandler(event) {
-        setUserInput(preState => { return { ...preState, eneteredTitle: event.target.value } });
+        dispatchUserInputs({ type: "TITLE", newInput: event.target.value });
     }
     function amountChangeHandler(event) {
-        setUserInput(preState => { return { ...preState, eneteredAmount: event.target.value } });
+        dispatchUserInputs({ type: "AMOUNT", newInput: event.target.value });
     }
     function dateChangeHandler(event) {
-        setUserInput(preState => { return { ...preState, eneteredDate: event.target.value } });
+        dispatchUserInputs({ type: "DATE", newInput: event.target.value });
     }
 
     return (
@@ -50,7 +68,7 @@ function ExpenseForm(props) {
                     <input
                         type="text"
                         id="title"
-                        value={userInput.eneteredTitle}
+                        value={userInputsState.eneteredTitle}
                         onChange={titleChangeHandler}
                     />
                 </div>
@@ -60,7 +78,7 @@ function ExpenseForm(props) {
                     <input
                         type="number"
                         id="amount"
-                        value={userInput.eneteredAmount}
+                        value={userInputsState.eneteredAmount}
                         onChange={amountChangeHandler}
                     />
                 </div>
@@ -70,7 +88,7 @@ function ExpenseForm(props) {
                     <input
                         type="date"
                         id="date"
-                        value={userInput.eneteredDate}
+                        value={userInputsState.eneteredDate}
                         onChange={dateChangeHandler}
                     />
                 </div>
